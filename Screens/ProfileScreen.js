@@ -29,11 +29,18 @@ const Profile = () => {
   const [mypics, setPics] = React.useState([]);
   const [jwt, setJwt] = React.useState();
   const [isLoading, setLoading] = React.useState(true);
+  const [myId, setMyId] = React.useState(true);
+  
 
   const [itemmm, setItem] = React.useState("no edited.")
 
   React.useEffect(() => {
     setLoading(true);
+
+    LocalStorage.getItem("userid").then((getedMyId) => {
+      setMyId(getedMyId);
+
+    });
 
     LocalStorage.getItem("jwt").then((getedJwt) => {
       setJwt(getedJwt);
@@ -142,10 +149,11 @@ const Profile = () => {
                   post={mypics.length}
                 />
                 <ProfileButtons
-                  id={0}
-                  name="Mr Peobody"
-                  accountName="mr_peobody"
-                  profileImage={{ uri: profilePic }}
+                  user={user}
+                  userProfile={userProfile}
+                  profilePic={profilePic}
+                  mypics={mypics}
+                  myid={myId}
                 />
               </View>
               <View>

@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 export const ProfileBody = ({
   name,
   accountName,
@@ -41,7 +41,7 @@ export const ProfileBody = ({
               }}
             />
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Feather
               name="plus-square"
               style={{
@@ -87,16 +87,16 @@ export const ProfileBody = ({
             {name}
           </Text>
         </View>
-        <View style={{alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', fontSize: 18}}>{post}</Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{post}</Text>
           <Text>Gönderi</Text>
         </View>
-        <View style={{alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', fontSize: 18}}>{followers}</Text>
-          <Text>Takpiçi</Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{followers}</Text>
+          <Text>Takipçi</Text>
         </View>
-        <View style={{alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', fontSize: 18}}>{following}</Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{following}</Text>
           <Text>Takip</Text>
         </View>
       </View>
@@ -104,12 +104,14 @@ export const ProfileBody = ({
   );
 };
 
-export const ProfileButtons = ({id, name, accountName, profileImage}) => {
+export const ProfileButtons = ({ user, userProfile, profilePic, mypics, myid }) => {
+  //id, name, accountName, profileImage
   const navigation = useNavigation();
   const [follow, setFollow] = useState(follow);
+
   return (
     <>
-      {id === 0 ? (
+      {user._id === myid ? (
         <View
           style={{
             width: '100%',
@@ -120,11 +122,13 @@ export const ProfileButtons = ({id, name, accountName, profileImage}) => {
           }}>
           <TouchableOpacity
             onPress={() =>
-              alert("Çok yakında!") /*navigation.push('EditProfile', {
-                name: name,
-                accountName: accountName,
-                profileImage: profileImage,
-              })*/
+              navigation.push('EditProfile', {
+                user: user,
+                userProfile: userProfile,
+                profilePic: profilePic,
+                mypics: mypics,
+                myid: myid,
+              })
             }
             style={{
               width: '100%',
@@ -152,61 +156,61 @@ export const ProfileButtons = ({id, name, accountName, profileImage}) => {
           </TouchableOpacity>
         </View>
       ) : (
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity
-            onPress={() => setFollow(!follow)}
-            style={{width: '42%'}}>
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              onPress={() => setFollow(!follow)}
+              style={{ width: '42%' }}>
+              <View
+                style={{
+                  width: '100%',
+                  height: 35,
+                  borderRadius: 5,
+                  backgroundColor: follow ? null : '#3493D9',
+                  borderWidth: follow ? 1 : 0,
+                  borderColor: '#DEDEDE',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={{ color: follow ? 'black' : 'white' }}>
+                  {follow ? 'Takip Ediliyor' : 'Takip et'}
+                </Text>
+              </View>
+            </TouchableOpacity>
             <View
               style={{
-                width: '100%',
+                width: '42%',
                 height: 35,
-                borderRadius: 5,
-                backgroundColor: follow ? null : '#3493D9',
-                borderWidth: follow ? 1 : 0,
+                borderWidth: 1,
                 borderColor: '#DEDEDE',
                 justifyContent: 'center',
                 alignItems: 'center',
+                borderRadius: 5,
               }}>
-              <Text style={{color: follow ? 'black' : 'white'}}>
-                {follow ? 'Takip Ediliyor' : 'Takpi et'}
-              </Text>
+              <Text>Message</Text>
             </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              width: '42%',
-              height: 35,
-              borderWidth: 1,
-              borderColor: '#DEDEDE',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-            }}>
-            <Text>Message</Text>
+            <View
+              style={{
+                width: '10%',
+                height: 35,
+                borderWidth: 1,
+                borderColor: '#DEDEDE',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 5,
+              }}>
+              <Feather
+                name="chevron-down"
+                style={{ fontSize: 20, color: 'black' }}
+              />
+            </View>
           </View>
-          <View
-            style={{
-              width: '10%',
-              height: 35,
-              borderWidth: 1,
-              borderColor: '#DEDEDE',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-            }}>
-            <Feather
-              name="chevron-down"
-              style={{fontSize: 20, color: 'black'}}
-            />
-          </View>
-        </View>
-      )}
+        )}
     </>
   );
 };

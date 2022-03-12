@@ -10,6 +10,7 @@ import Ionic from 'react-native-vector-icons/Ionicons';
 import ActivityScreen from './Screens/ActivityScreen';
 import HomeScreen from './Screens/HomeScreen';
 import ProfileScreen from './Screens/ProfileScreen';
+import EditProfileScreen from './ScreenComponents/EditProfile';
 import ReelsScreen from './Screens/ReelsScreen';
 import SearchScreen from './Screens/SearchScreen';
 import Status from './ScreenComponents/Status';
@@ -91,6 +92,9 @@ export default function App() {
 								<Stack.Screen name="Ulker Social" component={bottomTabScreen} />
 								<Stack.Screen name="Status" component={Status} />
 								<Stack.Screen name="Logout" component={LogoutScreen} />
+								
+								<Stack.Screen name="EditProfile" component={EditProfileScreen} />
+								
 							</>
 					}
 				</Stack.Navigator>
