@@ -39,48 +39,49 @@ const Profile = () => {
 
     LocalStorage.getItem("userid").then((getedMyId) => {
       setMyId(getedMyId);
+      
+      LocalStorage.getItem("jwt").then((getedJwt) => {
+        setJwt(getedJwt);
+  
+        fetch(`${API_URL}/mypost`, {
+          type: "POST",
+          headers: {
+            "Authorization": "Bearer " + getedJwt
+          }
+        }).then(res => res.json())
+          .then(result => {
+            console.log("pics", result);
+            setPics(result.myPosts);
+  
+            fetch(`${API_URL}/profile`, {
+              type: "POST",
+              headers: {
+                "Authorization": "Bearer " + getedJwt
+              }
+            }).then(res => res.json())
+              .then(result => {
+                console.log("profile", result)
+                setUser(result.user);
+                setUserProfile(result.user)
+                setProfilePic(result.user.pic);
+  
+                setLoading(false);
+  
+              })
+              .catch(err => {
+                console.log("/profile error: ", err)
+              })
+  
+          })
+          .catch(err => {
+            console.log("/mypost error: ", err)
+          })
+  
+  
+      })
 
     });
 
-    LocalStorage.getItem("jwt").then((getedJwt) => {
-      setJwt(getedJwt);
-
-      fetch(`${API_URL}/mypost`, {
-        type: "POST",
-        headers: {
-          "Authorization": "Bearer " + getedJwt
-        }
-      }).then(res => res.json())
-        .then(result => {
-          console.log("pics", result);
-          setPics(result.myPosts);
-
-          fetch(`${API_URL}/profile`, {
-            type: "POST",
-            headers: {
-              "Authorization": "Bearer " + getedJwt
-            }
-          }).then(res => res.json())
-            .then(result => {
-              console.log("profile", result)
-              setUser(result.user);
-              setUserProfile(result.user)
-              setProfilePic(result.user.pic);
-
-              setLoading(false);
-
-            })
-            .catch(err => {
-              console.log("/profile error: ", err)
-            })
-
-        })
-        .catch(err => {
-          console.log("/mypost error: ", err)
-        })
-
-
-    })
 
   }, []);
 
@@ -118,8 +119,6 @@ const Profile = () => {
   }
 
   const renderImages = (item) => {
-    console.log("renderImage", item);
-
     return (
       <View key={item.item._id} style={{ flex: 1, alignItems: 'center' }}>
         <Image
@@ -135,8 +134,10 @@ const Profile = () => {
 
   return (
     <>
+    {console.log("myId in profileScreen", myId)}
+
       {
-        isLoading == false ?
+        isLoading == false && myId !== null ?
           <>
             <View style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
               <View style={{ width: '100%', padding: 10 }}>
@@ -147,6 +148,7 @@ const Profile = () => {
                   followers={userProfile.followers.length}
                   following={userProfile.following.length}
                   post={mypics.length}
+                  user={user}
                 />
                 <ProfileButtons
                   user={user}

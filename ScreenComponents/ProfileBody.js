@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+
 export const ProfileBody = ({
   name,
   accountName,
@@ -9,6 +10,7 @@ export const ProfileBody = ({
   post,
   followers,
   following,
+  user
 }) => {
   return (
     <View>
@@ -86,6 +88,14 @@ export const ProfileBody = ({
             }}>
             {name}
           </Text>
+          <Text
+            style={{
+              paddingVertical: 5,
+              fontWeight: 'bold',
+              marginTop: -10
+            }}>
+            {user.email}
+          </Text>
         </View>
         <View style={{ alignItems: 'center' }}>
           <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{post}</Text>
@@ -100,6 +110,15 @@ export const ProfileBody = ({
           <Text>Takip</Text>
         </View>
       </View>
+
+      <View style={{ alignItems: 'left' }}>
+        <Text style={{ paddingVertical: 2.5, marginLeft: 5, marginTop: 2 }}>{user.bio}</Text>
+      </View>
+      
+      <View style={{ alignItems: 'left' }}>
+        <Text onPress={() => Linking.openURL(user.site)} style={{ paddingVertical: 2.5, marginLeft: 5, marginTop: 2 }}>{user.site}</Text>
+      </View>
+      
     </View>
   );
 };
@@ -111,6 +130,11 @@ export const ProfileButtons = ({ user, userProfile, profilePic, mypics, myid }) 
 
   return (
     <>
+      {
+        console.log("user._id", user._id),
+        console.log("myid", myid)
+
+      }
       {user._id === myid ? (
         <View
           style={{
