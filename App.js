@@ -6,6 +6,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionic from 'react-native-vector-icons/Ionicons';
 
+//Redux
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
+import { pageNameReducer } from './reducers/reducer';
+
+//Redux set
+import { useDispatch, useSelector } from 'react-redux';
+
 //Screens
 import ActivityScreen from './Screens/ActivityScreen';
 import HomeScreen from './Screens/HomeScreen';
@@ -25,7 +33,13 @@ export default function App() {
 
 	const [jwt, setJwt] = React.useState(null);
 
+	const store = createStore(combineReducers({ pageNameReducer }));
+
 	const bottomTabScreen = () => {
+		const dispatch = useDispatch();
+		
+
+
 		return (
 			<>
 				<Tab.Navigator
@@ -36,19 +50,30 @@ export default function App() {
 
 						tabBarIcon: ({ focused, size, colour }) => {
 							let iconName;
+							setInterval(() => {
+								console.log("route.name", route.name);
+								dispatch({ type: "setPageName", payload: route.name });
+
+							}, 500);
+
 							if (route.name === 'Home') {
 								iconName = focused ? 'home-sharp' : 'home-outline';
 								size = focused ? size + 8 : size + 2;
+
 							} else if (route.name === 'Search') {
 								iconName = focused ? 'search' : 'ios-search-outline';
+								
 							} else if (route.name === 'Reels') {
 								iconName = focused
 									? 'caret-forward-circle'
 									: 'caret-forward-circle-outline';
+								
 							} else if (route.name === 'Activity') {
 								iconName = focused ? 'ios-heart' : 'ios-heart-outline';
+								
 							} else if (route.name === 'Profile') {
 								iconName = focused ? 'ios-person-circle' : 'ios-person-outline';
+								
 							}
 
 							return <Ionic name={iconName} size={size} color={colour} />;
@@ -76,29 +101,31 @@ export default function App() {
 
 	return (
 		<>
-			<NavigationContainer>
-				<Stack.Navigator
-					screenOptions={{
-						headerShown: false,
-					}}>
-					{
-						console.log("jwt in app", jwt),
-						!jwt || jwt == "" ?
+			<Provider store={store}>
+				<NavigationContainer>
+					<Stack.Navigator
+						screenOptions={{
+							headerShown: false,
+						}}>
+						{
+							console.log("jwt in app", jwt),
+							!jwt || jwt == "" ?
 
-							<Stack.Screen name="Login" component={LoginScreen} />
+								<Stack.Screen name="Login" component={LoginScreen} />
 
-							:
-							<>
-								<Stack.Screen name="Ulker Social" component={bottomTabScreen} />
-								<Stack.Screen name="Status" component={Status} />
-								<Stack.Screen name="Logout" component={LogoutScreen} />
-								
-								<Stack.Screen name="EditProfile" component={EditProfileScreen} />
-								
-							</>
-					}
-				</Stack.Navigator>
-			</NavigationContainer>
+								:
+								<>
+									<Stack.Screen name="Ulker Social" component={bottomTabScreen} />
+									<Stack.Screen name="Status" component={Status} />
+									<Stack.Screen name="Logout" component={LogoutScreen} />
+
+									<Stack.Screen name="EditProfile" component={EditProfileScreen} />
+
+								</>
+						}
+					</Stack.Navigator>
+				</NavigationContainer>
+			</Provider>
 		</>
 	)
 }

@@ -1,7 +1,7 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {View, Text, Dimensions, TouchableOpacity, Image} from 'react-native';
 //import Video from 'react-native-video';
-import { Video, AVPlaybackStatus } from 'expo-av';
+import { Video } from 'expo-av';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -23,6 +23,15 @@ const SingleReel = ({item, index, currentIndex}) => {
 
   const [like, setLike] = useState(item.isLike);
 
+  useEffect(() => {
+     videoRef.current.playAsync()
+     if(currentIndex == index){
+	videoRef.current.playAsync()
+     }else{
+	videoRef.current.pauseAsync()
+     }
+
+  })
   return (
     <View
       style={{
@@ -32,6 +41,8 @@ const SingleReel = ({item, index, currentIndex}) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
+{console.log(currentIndex)}
+{console.log(index)}
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={() => setMute(!mute)}
@@ -40,14 +51,15 @@ const SingleReel = ({item, index, currentIndex}) => {
           height: '100%',
           position: 'absolute',
         }}>
+{console.log("item.video", item.video)}
         <Video
           ref={videoRef}
           isBuffering={onBuffer}
-          error={onError}
-          repeat={true}
+          onError={onError}
+          isLooping={true}
           resizeMode="cover"
-          isPlaying={true}
-          source={item.video}
+          isPlaying={currentIndex == index ? true : false}
+          source={{ uri: item.video }}
           isMuted={mute}
           style={{
             width: '100%',
