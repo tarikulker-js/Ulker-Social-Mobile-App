@@ -308,7 +308,6 @@ export default function Post() {
                                         <TextInput
                                             placeholder="Yorum ekleyin "
                                             style={{ opacity: 0.5 }}
-                                            keyboardType="submit"
                                             onChangeText={onChangeComment}
                                             value={comment}
                                         />

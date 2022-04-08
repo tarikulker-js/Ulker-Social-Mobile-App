@@ -50,11 +50,6 @@ export default function App() {
 
 						tabBarIcon: ({ focused, size, colour }) => {
 							let iconName;
-							setInterval(() => {
-								console.log("route.name", route.name);
-								dispatch({ type: "setPageName", payload: route.name });
-
-							}, 500);
 
 							if (route.name === 'Home') {
 								iconName = focused ? 'home-sharp' : 'home-outline';
@@ -108,7 +103,6 @@ export default function App() {
 							headerShown: false,
 						}}>
 						{
-							console.log("jwt in app", jwt),
 							!jwt || jwt == "" ?
 
 								<Stack.Screen name="Login" component={LoginScreen} />

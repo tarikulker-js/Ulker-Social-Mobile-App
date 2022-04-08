@@ -1,25 +1,35 @@
 import React from 'react';
 import {View, Text, Dimensions} from 'react-native';
-import { useSelector } from 'react-redux';
 import Feather from 'react-native-vector-icons/Feather';
 import ReelsComponent from '../ScreenComponents/ReelsComponent';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Reels = () => {
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
-
+  
   const pageName = useSelector(state => {
     return state.pageNameReducer;
     //console.log(state.videogIdReducer);
-
-  })
-
-  React.useEffect(() => {
-    setInterval(() => {
-      console.log(pageName);
     
-    }, 500)
   })
+  
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  React.useEffect(() => {
+    console.log("page name", pageName);
+    
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log("REELS")
+      dispatch({ type: "setPageName", payload: "Reels" });
+      
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+
+    return unsubscribe;
+  });
 
   return (
     <View

@@ -5,11 +5,27 @@ import { ProfileBody, ProfileButtons } from '../ScreenComponents/ProfileBody';
 import Entypo from 'react-native-vector-icons/Entypo';
 import BottomTabView from '../ScreenComponents/BottomTabView';
 import LocalStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 import { API_URL } from '../config.json'
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Profile = () => {
+
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  React.useEffect(() => {
+    
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch({ type: "setPageName", payload: "Profile" });
+      
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+
+    return unsubscribe;
+  });
+
   let circuls = [];
   let numberofcircels = 10;
 
