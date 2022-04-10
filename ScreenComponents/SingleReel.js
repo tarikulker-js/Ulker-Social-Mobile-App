@@ -6,13 +6,17 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Modal,
+  StyleSheet,
+  Pressable,
+  ScrollView,
 } from "react-native";
-//import Video from 'react-native-video';
 import { Video } from "expo-av";
 import Ionic from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
-import { useSelector } from "react-redux";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useSelector, useDispatch } from "react-redux";
 
 /* BURASI  */
 import { useIsFocused } from "@react-navigation/native";
@@ -22,6 +26,9 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
     return state.pageNameReducer;
     //console.log(state.videogIdReducer);
   });
+  const dispatch = useDispatch();
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -49,183 +56,327 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
   }, [videoRef, screenIsFocused]);
 
   useEffect(() => {
-    console.log(userId);
-    videoRef.current.playAsync();
-    if (currentIndex == index) {
-      videoRef.current.playAsync();
+    if (screenIsFocused && currentIndex == index) {
+      videoRef?.current?.playAsync();
     } else {
-      videoRef.current.pauseAsync();
+      videoRef?.current?.pauseAsync();
     }
   });
 
   const likeReel = () => {
-    Alert.alert("Like");
+    setLike(!like);
+    console.log(item._id);
+    console.log("item");
+    dispatch({ type: "setLikeReel", payload: item._id });
   };
 
   const unLikeReel = () => {
-    Alert.alert("UnLike");
+    setLike(!like);
+    dispatch({ type: "setUnLikeReel", payload: item._id });
   };
 
   return (
-    <View
-      style={{
-        width: windowWidth,
-        height: windowHeight,
-        position: "relative",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {console.log(currentIndex)}
-      {console.log(index)}
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => setMute(!mute)}
+    <>
+      {/* Modal */}
+      <View
         style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 22,
         }}
       >
-        {console.log("item.video", item.video)}
-        <Video
-          ref={videoRef}
-          isBuffering={onBuffer}
-          onError={onError}
-          isLooping={true}
-          resizeMode="cover"
-          isPlaying={currentIndex == index ? true : false}
-          source={{ uri: item.video }}
-          isMuted={mute}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+          style={{
+            height: windowHeight,
+            width: windowWidth,
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 22,
+              height: windowHeight,
+              width: windowWidth,
+            }}
+          >
+            <View
+              style={{
+                height: windowHeight,
+                width: windowWidth,
+                margin: 20,
+                backgroundColor: "white",
+                borderRadius: 20,
+                padding: 35,
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}
+            >
+              <Pressable
+                style={[
+                  {
+                    borderRadius: 20,
+                    padding: 10,
+                    elevation: 2,
+                    position: "absolute",
+                    left: 30,
+                    top: 15,
+                  },
+                  {
+                    backgroundColor: "#2196F3",
+                  },
+                ]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <MaterialIcons name="arrow-back" size={24} />
+              </Pressable>
+              <View
+                style={{
+                  position: "absolute",
+                  top: 80,
+                  width: windowWidth - 25,
+                  height: windowHeight - 150,
+                  backgroundColor: "red",
+                }}
+              >
+                {item.comments.length == 0 ? (
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      textAlign: "center",
+                    }}
+                  >
+                    Yorum yok. İlk yorumu yapan sen ol!
+                  </Text>
+                ) : (
+                  <>
+                    <ScrollView>
+                      {item.comments.map((comment) => {
+                        console.log("maped comment", comment);
+
+                        return (
+                          <>
+                            <View
+                              style={{
+                                width: windowWidth,
+                                height: 40,
+                              }}
+                            >
+                              <View style={{ paddingHorizontal: 15 }}>
+                                <View key={comment._id}>
+                                  <Text
+                                    style={{
+                                      fontWeight: "700",
+                                      fontSize: 14,
+                                      paddingVertical: 2,
+                                      marginTop: 7,
+                                    }}
+                                  >
+                                    {comment.postedBy.name}: {comment.text}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                          </>
+                        );
+                      })}
+                    </ScrollView>
+                  </>
+                )}
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
+      <View
+        style={{
+          width: windowWidth,
+          height: windowHeight - 20,
+          position: "relative",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setMute(!mute)}
           style={{
             width: "100%",
             height: "100%",
             position: "absolute",
           }}
-        />
-      </TouchableOpacity>
-      <Ionic
-        name="volume-mute"
-        style={{
-          fontSize: mute ? 20 : 0,
-          color: "white",
-          position: "absolute",
-          backgroundColor: "rgba(52,52,52,0.6)",
-          borderRadius: 100,
-          padding: mute ? 20 : 0,
-        }}
-      />
-      <View
-        style={{
-          position: "absolute",
-          width: windowWidth,
-          zIndex: 1,
-          bottom: 0, //edited
-          padding: 10,
-        }}
-      >
-        <View style={{}}>
-          <TouchableOpacity style={{ width: 150 }}>
-            <View
-              style={{ width: 100, flexDirection: "row", alignItems: "center" }}
-            >
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 100,
-                  backgroundColor: "white",
-                  margin: 10,
-                }}
-              >
-                <Image
-                  source={{ uri: item.postedBy.pic }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    resizeMode: "cover",
-                    borderRadius: 100,
-                  }}
-                />
-              </View>
-              <Text style={{ color: "white", fontSize: 16 }}>
-                {item.postedBy.name}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <Text style={{ color: "white", fontSize: 14, marginHorizontal: 10 }}>
-            {item.description}
-          </Text>
-          <View style={{ flexDirection: "row", padding: 10 }}>
-            <Ionic
-              name="ios-musical-note"
-              style={{ color: "white", fontSize: 16 }}
-            />
-            <Text style={{ color: "white" }}>Original Audio</Text>
-          </View>
-        </View>
-      </View>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 10, //edited
-          right: 0,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => setLike(!like)}
-          style={{ padding: 10 }}
         >
-          <AntDesign
-            onPress={like ? unLikeReel : likeReel}
-            name={like ? "heart" : "hearto"}
-            style={{ color: like ? "red" : "white", fontSize: 25 }}
-          />
-          <Text style={{ color: "white" }}>{item.likes.length}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10 }}>
-          <Ionic
-            onPress={() => Alert.alert("Çok Yakında!")}
-            name="ios-chatbubble-outline"
-            style={{ color: "white", fontSize: 25 }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10 }}>
-          <Ionic
-            onPress={() => Alert.alert("Çok Yakında!")}
-            name="paper-plane-outline"
-            style={{ color: "white", fontSize: 25 }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10 }}>
-          <Feather
-            onPress={() => Alert.alert("Çok Yakında!")}
-            name="more-vertical"
-            style={{ color: "white", fontSize: 25 }}
-          />
-        </TouchableOpacity>
-        <View
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 10,
-            borderWidth: 2,
-            borderColor: "white",
-            margin: 10,
-          }}
-        >
-          <Image
-            source={item.postProfile}
+          <Video
+            ref={videoRef}
+            isBuffering={onBuffer}
+            onError={onError}
+            isLooping={true}
+            resizeMode="cover"
+            isPlaying={screenIsFocused && currentIndex == index ? true : false}
+            source={{ uri: item.video }}
+            isMuted={mute}
             style={{
               width: "100%",
               height: "100%",
-              borderRadius: 10,
-              resizeMode: "cover",
+              position: "absolute",
             }}
           />
+        </TouchableOpacity>
+        <Ionic
+          name="volume-mute"
+          style={{
+            fontSize: mute ? 20 : 0,
+            color: "white",
+            position: "absolute",
+            backgroundColor: "rgba(52,52,52,0.6)",
+            borderRadius: 100,
+            padding: mute ? 20 : 0,
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            width: windowWidth,
+            zIndex: 1,
+            bottom: 0, //edited
+            padding: 10,
+          }}
+        >
+          <View style={{}}>
+            <TouchableOpacity style={{ width: 150 }}>
+              <View
+                style={{
+                  width: 100,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 100,
+                    backgroundColor: "white",
+                    margin: 10,
+                  }}
+                >
+                  <Image
+                    source={{ uri: item.postedBy.pic }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      resizeMode: "cover",
+                      borderRadius: 100,
+                    }}
+                  />
+                </View>
+                <Text style={{ color: "white", fontSize: 16 }}>
+                  {item.postedBy.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <Text
+              style={{ color: "white", fontSize: 14, marginHorizontal: 10 }}
+            >
+              {item.description}
+            </Text>
+            <View style={{ flexDirection: "row", padding: 10 }}>
+              <Ionic
+                name="ios-musical-note"
+                style={{ color: "white", fontSize: 16 }}
+              />
+              <Text style={{ color: "white" }}>Original Audio</Text>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 10, //edited
+            right: 0,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => setLike(!like)}
+            style={{ padding: 10 }}
+          >
+            <AntDesign
+              onPress={like ? unLikeReel : likeReel}
+              name={like ? "heart" : "hearto"}
+              style={{ color: like ? "red" : "white", fontSize: 25 }}
+            />
+            <Text style={{ color: "white" }}>{item.likes.length}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ padding: 10 }}
+            onPress={() => {
+              videoRef?.current?.playAsync();
+              //				setModalVisible(!modalVisible)
+            }}
+          >
+            <Ionic
+              onPress={() => {
+                videoRef?.current?.playAsync();
+                //				setModalVisible(!modalVisible)
+              }}
+              name="ios-chatbubble-outline"
+              style={{ color: "white", fontSize: 25 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ padding: 10 }}>
+            <Ionic
+              onPress={() => Alert.alert("Çok Yakında!")}
+              name="paper-plane-outline"
+              style={{ color: "white", fontSize: 25 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ padding: 10 }}>
+            <Feather
+              onPress={() => Alert.alert("Çok Yakında!")}
+              name="more-vertical"
+              style={{ color: "white", fontSize: 25 }}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 10,
+              borderWidth: 2,
+              borderColor: "white",
+              margin: 10,
+            }}
+          >
+            <Image
+              source={item.postProfile}
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: 10,
+                resizeMode: "cover",
+              }}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 

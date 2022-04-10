@@ -4,6 +4,7 @@ import { SwiperFlatList } from "react-native-swiper-flatlist";
 import SingleReel from "./SingleReel";
 import LocalStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../config.json";
+import { useSelector, useDispatch } from "react-redux";
 
 /*const videoData = [
   {
@@ -30,16 +31,28 @@ const ReelsComponent = () => {
   const [videoData, setVideoData] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userId, setUserId] = useState("");
-
+  const [jwt, setJwt] = useState("");
   const handleChangeIndexValue = ({ index }) => {
     setCurrentIndex(index);
   };
 
-  useEffect(() => {
+  const dispatch = useDispatch();
+  const likeReel = useSelector((state) => {
+    return state.likeReel;
+    //console.log(state.videogIdReducer);
+  });
+
+  const unLikeReel = useSelector((state) => {
+    return state.unLikeReel;
+    //console.log(state.videogIdReducer);
+  });
+
+  const updateInfos = () => {
     LocalStorage.getItem("userid").then((userid) => {
       setUserId(userid);
 
       LocalStorage.getItem("jwt").then((jjwt) => {
+        setJwt(jjwt);
         fetch(`${API_URL}/allreels`, {
           type: "POST",
           headers: {
@@ -48,7 +61,84 @@ const ReelsComponent = () => {
         })
           .then((res) => res.json())
           .then((result) => {
-            console.log("POSTS: ", result);
+            dispatch({ type: "setLikeReel", payload: null });
+            dispatch({ type: "setUnLikeReel", payload: null });
+
+            setVideoData(result.reels);
+            console.log(result.reels);
+            console.log("updated. ");
+          })
+          .catch((err) => {
+            //console.log(err)
+          });
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (likeReel == null) {
+    } else {
+      console.log("LIKEREEL", likeReel);
+
+      fetch(`${API_URL}/reel/like`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + jwt,
+        },
+        body: JSON.stringify({
+          postId: likeReel,
+        }),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          console.log("like result", result);
+          updateInfos();
+        })
+        .catch((err) => {
+          //console.log(err)
+        });
+    }
+
+    if (unLikeReel == null) {
+    } else {
+      console.log("UNLIKEREEL", unLikeReel);
+
+      fetch(`${API_URL}/reel/unlike`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + jwt,
+        },
+        body: JSON.stringify({
+          postId: unLikeReel,
+        }),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          console.log("unlike result", result);
+          updateInfos();
+        })
+        .catch((err) => {
+          //console.log(err)
+        });
+    }
+  });
+
+  useEffect(() => {
+    LocalStorage.getItem("userid").then((userid) => {
+      setUserId(userid);
+
+      LocalStorage.getItem("jwt").then((jjwt) => {
+        setJwt(jjwt);
+        fetch(`${API_URL}/allreels`, {
+          type: "POST",
+          headers: {
+            Authorization: "Bearer " + jjwt,
+          },
+        })
+          .then((res) => res.json())
+          .then((result) => {
             setVideoData(result.reels);
           })
           .catch((err) => {
