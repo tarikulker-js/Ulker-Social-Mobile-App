@@ -10,6 +10,8 @@ import {
   StyleSheet,
   Pressable,
   ScrollView,
+  TextInput,
+  Button,
 } from "react-native";
 import { Video } from "expo-av";
 import Ionic from "react-native-vector-icons/Ionicons";
@@ -17,6 +19,8 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useSelector, useDispatch } from "react-redux";
+import LocalStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../config.json";
 
 /* BURASI  */
 import { useIsFocused } from "@react-navigation/native";
@@ -43,7 +47,7 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
   };
 
   const [mute, setMute] = useState(false);
-
+  const [comment, onChangeComment] = useState(null);
   const [like, setLike] = useState(item.likes.includes(userId));
 
   /* BURASI  */
@@ -73,6 +77,35 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
   const unLikeReel = () => {
     setLike(!like);
     dispatch({ type: "setUnLikeReel", payload: item._id });
+  };
+
+  const makeComment = (text, postId) => {
+    if (text === "" || text == null) {
+      alert("boş yorum gönderilemez. ");
+    } else if (text.length > 0) {
+      LocalStorage.getItem("jwt").then((jwt) => {
+        fetch(`${API_URL}/reel/comment`, {
+          method: "put",
+          headers: {
+            Authorization: "Bearer " + jwt,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            reelId: postId,
+            text: text,
+          }),
+        })
+          .then((res) => res.text())
+          .then((result) => {
+            setModalVisible(!modalVisible);
+            alert("yorum yapıldı.");
+            onChangeComment("");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    }
   };
 
   return (
@@ -151,8 +184,7 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
                   position: "absolute",
                   top: 80,
                   width: windowWidth - 25,
-                  height: windowHeight - 150,
-                  backgroundColor: "red",
+                  height: windowHeight - 175,
                 }}
               >
                 {item.comments.length == 0 ? (
@@ -199,6 +231,44 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
                     </ScrollView>
                   </>
                 )}
+              </View>
+              <View
+                style={{
+                  width: windowWidth - 25,
+                  position: "absolute",
+                  bottom: 50,
+                }}
+              >
+                <Text></Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={{ uri: item.postedBy.pic }}
+                      style={{
+                        width: 25,
+                        height: 25,
+                        borderRadius: 100,
+                        backgroundColor: "orange",
+                        marginRight: 10,
+                      }}
+                    />
+                    <TextInput
+                      placeholder="Yorum ekleyin "
+                      style={{ opacity: 0.5 }}
+                      onChangeText={onChangeComment}
+                      value={comment}
+                    />
+                  </View>
+                  <Button
+                    title="Gönder"
+                    onPress={() => makeComment(comment, item._id)}
+                  />
+                </View>
               </View>
             </View>
           </View>
@@ -333,8 +403,7 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
           >
             <Ionic
               onPress={() => {
-                videoRef?.current?.playAsync();
-                //				setModalVisible(!modalVisible)
+                setModalVisible(!modalVisible);
               }}
               name="ios-chatbubble-outline"
               style={{ color: "white", fontSize: 25 }}

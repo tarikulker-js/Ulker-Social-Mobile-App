@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Linking } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
+import MenuButton from "react-native-menu-button";
 
 export const ProfileBody = ({
   name,
@@ -12,6 +13,14 @@ export const ProfileBody = ({
   following,
   user,
 }) => {
+  const navigation = useNavigation();
+  const [selectData, setSelectData] = useState("");
+
+  useEffect(() => {
+    if (selectData == "logout") {
+      navigation.navigate("Logout");
+    }
+  });
   return (
     <View>
       {accountName ? (
@@ -36,14 +45,16 @@ export const ProfileBody = ({
             >
               {accountName}
             </Text>
-            <Feather
-              name="chevron-down"
-              style={{
+            <MenuButton
+              buttonStyle={{
                 fontSize: 20,
                 color: "black",
                 paddingHorizontal: 5,
                 opacity: 0.5,
               }}
+              menuGroup={[{ key: "0", value: "logout", text: "Çıkış Yap" }]}
+              onSelect={(value) => setSelectData(value)}
+              optionSelectedStyle={{ backgroundColor: "red" }}
             />
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
