@@ -50,7 +50,13 @@ export const ProfileBody = ({
                 fontSize: 20,
                 color: "black",
                 paddingHorizontal: 5,
-                opacity: 0.5,
+                paddingLeft: 10
+              }}
+              optionStyle={{
+                fontSize: 20,
+                color: "black",
+                paddingHorizontal: 5,
+                marginLeft: 100,
               }}
               menuGroup={[{ key: "0", value: "logout", text: "Çıkış Yap" }]}
               onSelect={(value) => setSelectData(value)}

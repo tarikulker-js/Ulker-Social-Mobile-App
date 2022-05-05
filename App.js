@@ -9,7 +9,7 @@ import Ionic from "react-native-vector-icons/Ionicons";
 //Redux
 import { Provider } from "react-redux";
 import { combineReducers, createStore } from "redux";
-import { pageNameReducer, likeReel, unLikeReel } from "./reducers/reducer";
+import { pageNameReducer, likeReel, unLikeReel, homeRefreshing } from "./reducers/reducer";
 
 //Redux set
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 //Screens
 import ActivityScreen from "./Screens/ActivityScreen";
 import HomeScreen from "./Screens/HomeScreen";
+import NewPostInGallery from './ScreenComponents/NewPostInGallery';
 import ProfileScreen from "./Screens/ProfileScreen";
 import EditProfileScreen from "./ScreenComponents/EditProfile";
 import ReelsScreen from "./Screens/ReelsScreen";
@@ -34,7 +35,7 @@ export default function App() {
   const [jwt, setJwt] = React.useState(null);
 
   const store = createStore(
-    combineReducers({ pageNameReducer, likeReel, unLikeReel })
+    combineReducers({ pageNameReducer, likeReel, unLikeReel, homeRefreshing })
   );
 
   const bottomTabScreen = () => {
@@ -64,6 +65,8 @@ export default function App() {
                 iconName = focused ? "ios-heart" : "ios-heart-outline";
               } else if (route.name === "Profile") {
                 iconName = focused ? "ios-person-circle" : "ios-person-outline";
+              } else if (route.name == "NewPostInGallery") {
+                iconName = focused ? "add-circle-sharp" : "add-circle-outline"
               }
 
               return <Ionic name={iconName} size={size} color={colour} />;
@@ -72,9 +75,10 @@ export default function App() {
         >
           <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="Search" component={SearchScreen} />
+          <Tab.Screen name="NewPostInGallery" component={NewPostInGallery} />
           <Tab.Screen name="Reels" component={ReelsScreen} />
-          <Tab.Screen name="Activity" component={ActivityScreen} />
           <Tab.Screen name="Profile" component={ProfileScreen} />
+          
         </Tab.Navigator>
       </>
     );

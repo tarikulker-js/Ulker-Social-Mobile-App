@@ -187,7 +187,9 @@ export default function DiscoverPost() {
         <>
             <Loading visible={isLoading} />
             <View>
-                {posts == null ? <></> : posts.map(data => {
+                {posts == null ? <><Text style={{ fontSize: 30, textAlign: 'center', alignItems: 'center'}}>Yükleniyor... </Text></> : 
+                posts.length == 0 ? <Text>Takip ettiğiniz profillerin hiç gönderisi yok. </Text> :
+                posts.map(data => {
                     return (
                         <View
                             key={data._id}
@@ -321,7 +323,8 @@ export default function DiscoverPost() {
                             </View>
                         </View>
                     );
-                })}
+                })
+                }
             </View>
         </>
     

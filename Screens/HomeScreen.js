@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, View, StatusBar, ScrollView, Button } from "react-native";
+import { Text, View, StatusBar, ScrollView, RefreshControl, Alert } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import Stories from "../ScreenComponents/Stories";
@@ -11,24 +11,43 @@ import { useDispatch, useSelector } from "react-redux";
 export default function HomeScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       dispatch({ type: "setPageName", payload: "Home" });
     });
-
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-
+   
     return unsubscribe;
+    
   });
+  
+  var [isLoading, setLoading] = React.useState('false');
 
   const [jwt, setJwt] = React.useState("null");
-
+  
+	const onRefresh = React.useCallback(() => {
+    LocalStorage.setItem("isLoadingHomeScreen", JSON.stringify(true))
+    console.log("set loading true")
+    
+  }, []);
+  
   React.useEffect(() => {
     LocalStorage.getItem("jwt").then((jjwt) => {
       setJwt(jjwt);
     });
+
+    setInterval(() => {
+      LocalStorage.getItem("isLoadingHomeScreen").then((isLoadingHome) => {
+        setLoading(isLoadingHome);
+        //console.log(isLoadingHome)
+  
+      })
+    }, 1500)
+    
+
   });
 
+  
   return (
     <View>
       <StatusBar
@@ -45,16 +64,25 @@ export default function HomeScreen() {
           alignItems: "center",
         }}
       >
-        <FontAwesome name="plus-square-o" style={{ fontSize: 24 }} />
+        <FontAwesome name="plus-square-o" size={36} onPress={() => {
+          Alert.alert("Create Post");
+          navigation.navigate("NewPostInGallery");
+        }} />
         <Text style={{ fontSize: 25, fontWeight: "500" }}>UlkerSocial</Text>
         <Feather
           name="navigation"
-          stlye={{ fontSize: 35 }}
+          size={28}
           onPress={() => {}}
         />
       </View>
 
-      <ScrollView>
+        {console.log("in render", isLoading)}
+      <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={JSON.parse(isLoading)}
+            onRefresh={onRefresh}
+          />
+        }>
         <Stories />
         <Post />
       </ScrollView>

@@ -49,14 +49,12 @@ export default function LoginScreen() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("data", data);
-        alert("başarılı");
-
         if (data.error) {
           alert(data.error);
         } else {
           LocalStorage.setItem("jwt", data.token);
           LocalStorage.setItem("userid", data.user);
+          alert("başarılı");
         }
       })
       .catch((err) => console.log("login post error: ", err));
@@ -64,7 +62,6 @@ export default function LoginScreen() {
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Hello World! Here is Login Screen</Text>
       <TextInput
         style={{
           borderColor: "red",

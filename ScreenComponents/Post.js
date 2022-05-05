@@ -6,16 +6,19 @@ import {
   TouchableOpacity,
   TextInput,
   Button,
+  Alert,
 } from "react-native";
 import { API_URL } from "../config.json";
 import LocalStorage from "@react-native-async-storage/async-storage";
 import Feather from "react-native-vector-icons/Feather";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Entypo from "react-native-vector-icons/Entypo";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Loading from "react-native-loading-spinner-overlay";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Post() {
+  const dispatch = useDispatch();
   const [posts, setPosts] = useState(null);
   const [userid, setUserId] = useState();
   const [jwt, setJwt] = useState(null);
@@ -23,13 +26,14 @@ export default function Post() {
   const [isLoading, setLoading] = useState(false);
 
   const updateInfos = () => {
+    //console.log("called update")
     setLoading(true);
 
     LocalStorage.getItem("jwt").then((getedJwt) => {
-      console.log(getedJwt);
+      //console.log(getedJwt);
 
       LocalStorage.getItem("userid").then((getedUserId) => {
-        console.log(getedUserId);
+        //console.log(getedUserId);
         setUserId(getedUserId);
       });
 
@@ -44,10 +48,12 @@ export default function Post() {
           //console.log("POSTS: ", result.posts);
           setPosts(result.posts);
           setLoading(false);
-          console.log("updated. ");
+          //console.log("false 50 post.js")
+          LocalStorage.setItem("isLoadingHomeScreen", JSON.stringify(false))
+          //console.log("updated. ");
         })
         .catch((err) => {
-          console.log(err);
+          //console.log(err);
         });
     });
   };
@@ -55,10 +61,10 @@ export default function Post() {
   useEffect(() => {
     setLoading(true);
     LocalStorage.getItem("jwt").then((getedJwt) => {
-      console.log(getedJwt);
+      //console.log(getedJwt);
 
       LocalStorage.getItem("userid").then((getedUserId) => {
-        console.log(getedUserId);
+        //console.log(getedUserId);
         setUserId(getedUserId);
       });
 
@@ -73,10 +79,12 @@ export default function Post() {
           //console.log("POSTS: ", result);
           setPosts(result.posts);
           setLoading(false);
-          console.log("loaded");
+          //console.log("false 80 post.js")
+          LocalStorage.setItem("isLoadingHomeScreen", JSON.stringify(false))
+          //console.log("loaded");
         })
         .catch((err) => {
-          console.log(err);
+          //console.log(err);
         });
     });
   }, []);
@@ -85,6 +93,15 @@ export default function Post() {
     LocalStorage.getItem("jwt").then((getedJwt) => {
       setJwt(getedJwt);
     });
+
+    setInterval(() => {
+      LocalStorage.getItem("isLoadingHomeScreen").then((isLoadingHome) => {
+        if(isLoadingHome == 'true' || isLoadingHome == true){
+          updateInfos();
+
+        }
+      })
+    }, 1500)
   });
 
   const likePost = (id) => {
@@ -101,7 +118,7 @@ export default function Post() {
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log("result", result);
+        //console.log("result", result);
 
         updateInfos();
       })
@@ -149,7 +166,7 @@ export default function Post() {
       })
         .then((res) => res.json())
         .then((result) => {
-          console.log(result);
+          //console.log(result);
 
           alert("yorum yapıldı.");
           onChangeComment("");
@@ -168,15 +185,16 @@ export default function Post() {
     fetch(`${API_URL}/deletepost/${postId}`, {
       method: "DELETE",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
+        Authorization: "Bearer " + jwt,
       },
     })
       .then((res) => res.json())
       .then((result) => {
         //console.log(result);
-
+        
         if (result.message) {
           alert(result.message);
+
         }
       });
   };
@@ -184,10 +202,12 @@ export default function Post() {
   return (
     <>
       <Loading visible={isLoading} />
+      
       <View>
         {posts == null ? (
-          <></>
+          <><Text style={{ fontSize: 30, textAlign: 'center', alignItems: 'center'}}>Yükleniyor...</Text></>
         ) : (
+          posts.length == 0 ? <><Text style={{ fontSize: 30, textAlign: 'center', alignItems: 'center'}}>Takip ettikleriniz profillerin hiç gönderisi yok. </Text></> : 
           posts.map((data) => {
             return (
               <View
@@ -216,8 +236,11 @@ export default function Post() {
                         {data.postedBy.name}
                       </Text>
                     </View>
+
                   </View>
-                  {/*<Feather name="delete-vertical" style={{ fontSize: 20 }} />*/}
+                    <View style={{ paddingRight: 5, float: 'right' }}>
+                      <MaterialIcons name="delete-outline" size={25} onPress={() => { deletePost(data._id) }} />
+                    </View>
                 </View>
                 <View
                   style={{
@@ -269,30 +292,30 @@ export default function Post() {
                   </View>
                   <FontAwesome
                     name={
-                      data.savedUsers.includes(userid)
+                      data.savedUsers ? data.savedUsers.includes(userid)
                         ? "bookmark"
-                        : "bookmark-o"
+                        : "bookmark-o" : "bookmark-o"
                     }
                     style={{ fontSize: 30 }}
                     onPress={() => {
-                      console.log(userid);
-                      console.log("kaydediliyor...");
-                      fetch(`${API_URL}/savepost`, {
+                      Alert.alert("Çok Yakında!")
+                      //console.log(userid);
+                      //console.log("kaydediliyor...");
+                      /*fetch(`${API_URL}/savepost`, {
                         method: "PUT",
                         headers: {
-                          "Content-Type": "application/json",
-                          Authorization: "Bearer " + jwt,
+                          "Authorization": "Bearer " + jwt
                         },
                         body: JSON.stringify({
-                          postId: data._id,
+                          postId: data.id
                         }),
-                      })
-                        .then((res) => res.json())
-                        .then((result) => {
-                          console.log(result);
-                          updateInfos();
-                        })
-                        .catch((err) => console.log(err));
+                      }).then(res => res.json())
+                      .then(result => {
+                        //console.log(result);
+                        updateInfos();
+                        
+                      })*/
+                      
                     }}
                   />
                 </View>

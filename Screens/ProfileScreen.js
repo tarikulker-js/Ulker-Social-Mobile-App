@@ -8,6 +8,7 @@ import {
   StatusBar,
   ScrollView,
   Image,
+  RefreshControl
 } from "react-native";
 
 import { ProfileBody, ProfileButtons } from "../ScreenComponents/ProfileBody";
@@ -53,18 +54,19 @@ const Profile = () => {
   const [isLoading, setLoading] = React.useState(true);
   const [myId, setMyId] = React.useState(true);
 
-  const [itemmm, setItem] = React.useState("no edited.");
+  const [refreshing, setRefreshing] = React.useState(false);
 
-  React.useEffect(() => {
-    setLoading(true);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => { setRefreshing(false)},2000);
 
-    LocalStorage.getItem("userid").then((getedMyId) => {
-      setMyId(getedMyId);
+    updateInfos(jwt);
 
-      LocalStorage.getItem("jwt").then((getedJwt) => {
-        setJwt(getedJwt);
+  }, []);
 
-        fetch(`${API_URL}/mypost`, {
+  const updateInfos = (getedJwt) => {
+    console.log(getedJwt);
+    fetch(`${API_URL}/mypost`, {
           type: "POST",
           headers: {
             Authorization: "Bearer " + getedJwt,
@@ -97,6 +99,20 @@ const Profile = () => {
           .catch((err) => {
             console.log("/mypost error: ", err);
           });
+  }
+
+  React.useEffect(() => {
+    setLoading(true);
+
+    LocalStorage.getItem("userid").then((getedMyId) => {
+      setMyId(getedMyId);
+
+      LocalStorage.getItem("jwt").then((getedJwt) => {
+        setJwt(getedJwt);
+        alert(getedJwt)
+        console.log("getedJwt", getedJwt);
+
+        updateInfos(getedJwt);
       });
     });
   }, []);
@@ -150,10 +166,17 @@ const Profile = () => {
   };
 
   return (
-    <>
+    <ScrollView 
+    nestedScrollEnabled = {true} 
+    refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      />
+    }>
       {console.log("myId in profileScreen", myId)}
 
-      {isLoading == false && myId !== null ? (
+      {isLoading == false && myId !== null || user ? (
         <>
           <View
             style={{ width: "100%", height: "100%", backgroundColor: "white" }}
@@ -203,6 +226,7 @@ const Profile = () => {
               {userProfile !== null ? (
                 <>
                   <FlatList
+                    nestedScrollEnabled 
                     horizontal={false}
                     numColumns={3}
                     data={mypics}
@@ -222,7 +246,7 @@ const Profile = () => {
           <Text>Yükleniyor...</Text>
         </>
       )}
-    </>
+    </ScrollView>
   );
 };
 
