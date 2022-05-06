@@ -213,7 +213,7 @@ export const ProfileButtons = ({
                   fontWeight: "bold",
                   fontSize: 14,
                   letterSpacing: 1,
-                  opacity: 0.8,
+                  opacity: 0.75,
                 }}
               >
                 Profilinizi Düzenleyin

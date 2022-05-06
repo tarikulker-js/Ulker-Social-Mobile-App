@@ -375,6 +375,8 @@ export default function Post() {
                       onPress={() => makeComment(comment, data._id)}
                     />
                   </View>
+
+                  <Text style={{ opacity: 0.6 }}>Oluşturma Tarihi: {data.createdAt ? data.createdAt.substring(0,10) : data.updatedAt.substring(0,10)} {data.createdAt ? Number(data.createdAt.substring(11,13)) + 3 : Number(data.updatedAt.substring(11,13)) + 3}:{data.createdAt ? data.createdAt.substring(14,16): data.updatedAt.substring(14,16)}</Text>
                 </View>
               </View>
             );

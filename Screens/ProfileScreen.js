@@ -56,66 +56,69 @@ const Profile = () => {
 
   const [refreshing, setRefreshing] = React.useState(false);
 
+  
+  React.useEffect(() => {
+    setLoading(true);
+    
+    LocalStorage.getItem("userid").then((getedMyId) => {
+      setMyId(getedMyId);
+      
+      LocalStorage.getItem("jwt").then((getedJwt) => {
+        setJwt(getedJwt);
+        updateInfos();
+        
+      });
+
+    });
+  }, []);
+  
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => { setRefreshing(false)},2000);
 
     updateInfos(jwt);
 
   }, []);
 
-  const updateInfos = (getedJwt) => {
-    console.log(getedJwt);
-    fetch(`${API_URL}/mypost`, {
-          type: "POST",
-          headers: {
-            Authorization: "Bearer " + getedJwt,
-          },
-        })
-          .then((res) => res.json())
-          .then((result) => {
-            console.log("pics", result);
-            setPics(result.myPosts);
+  const updateInfos = () => {
+    LocalStorage.getItem("jwt").then((getedJwt) => {
+      setJwt(getedJwt);
 
-            fetch(`${API_URL}/profile`, {
-              type: "POST",
-              headers: {
-                Authorization: "Bearer " + getedJwt,
-              },
-            })
-              .then((res) => res.json())
-              .then((result) => {
-                console.log("profile", result);
-                setUser(result.user);
-                setUserProfile(result.user);
-                setProfilePic(result.user.pic);
+      fetch(`${API_URL}/mypost`, {
+        type: "POST",
+        headers: {
+          Authorization: "Bearer " + getedJwt,
+        },
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          console.log("pics", result);
+          setPics(result.myPosts);
 
-                setLoading(false);
-              })
-              .catch((err) => {
-                console.log("/profile error: ", err);
-              });
+          fetch(`${API_URL}/profile`, {
+            type: "POST",
+            headers: {
+              Authorization: "Bearer " + getedJwt,
+            },
           })
-          .catch((err) => {
-            console.log("/mypost error: ", err);
-          });
+            .then((res) => res.json())
+            .then((result) => {
+              console.log("profile", result);
+              setUser(result.user);
+              setUserProfile(result.user);
+              setProfilePic(result.user.pic);
+
+              setLoading(false);
+              setRefreshing(false);
+            })
+            .catch((err) => {
+              console.log("/profile error: ", err);
+            });
+        })
+        .catch((err) => {
+          console.log("/mypost error: ", err);
+        });
+    })
   }
-
-  React.useEffect(() => {
-    setLoading(true);
-
-    LocalStorage.getItem("userid").then((getedMyId) => {
-      setMyId(getedMyId);
-
-      LocalStorage.getItem("jwt").then((getedJwt) => {
-        setJwt(getedJwt);
-        alert(getedJwt)
-        console.log("getedJwt", getedJwt);
-
-        updateInfos(getedJwt);
-      });
-    });
-  }, []);
 
   for (let index = 0; index < numberofcircels; index++) {
     circuls.push(
@@ -233,7 +236,6 @@ const Profile = () => {
                     keyExtractor={(index) => index._id}
                     renderItem={renderImages}
                   />
-                  {console.log("userProfile", mypics)}
                 </>
               ) : (
                 <></>
