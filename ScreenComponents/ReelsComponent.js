@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, RefreshControl } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import SingleReel from "./SingleReel";
 import LocalStorage from "@react-native-async-storage/async-storage";
@@ -32,6 +32,8 @@ const ReelsComponent = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userId, setUserId] = useState("");
   const [jwt, setJwt] = useState("");
+  const [refreshing, setRefreshing] = React.useState(false);
+  
   const handleChangeIndexValue = ({ index }) => {
     setCurrentIndex(index);
   };
@@ -61,6 +63,7 @@ const ReelsComponent = () => {
         })
           .then((res) => res.json())
           .then((result) => {
+            setRefreshing(false);
             dispatch({ type: "setLikeReel", payload: null });
             dispatch({ type: "setUnLikeReel", payload: null });
 
@@ -73,6 +76,12 @@ const ReelsComponent = () => {
           });
       });
     });
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+
+    updateInfos();
   };
 
   useEffect(() => {
@@ -154,6 +163,12 @@ const ReelsComponent = () => {
         <Text>Yükleniyor...</Text>
       ) : (
         <SwiperFlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
           vertical={true}
           onChangeIndex={handleChangeIndexValue}
           data={videoData}

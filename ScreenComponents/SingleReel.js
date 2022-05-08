@@ -97,7 +97,8 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
         })
           .then((res) => res.text())
           .then((result) => {
-            setModalVisible(!modalVisible);
+            console.log(result)
+//            setModalVisible(!modalVisible);
             alert("yorum yapıldı.");
             onChangeComment("");
           })
@@ -124,7 +125,6 @@ const SingleReel = ({ userId, item, index, currentIndex }) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
             setModalVisible(!modalVisible);
           }}
           style={{

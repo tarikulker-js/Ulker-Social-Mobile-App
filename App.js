@@ -17,7 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 //Screens
 import ActivityScreen from "./Screens/ActivityScreen";
 import HomeScreen from "./Screens/HomeScreen";
-import NewPostInGallery from './ScreenComponents/NewPostInGallery';
+import NewPostInGallery from './Screens/NewPost';
+import NewReels from './Screens/NewReels';
 import ProfileScreen from "./Screens/ProfileScreen";
 import EditProfileScreen from "./ScreenComponents/EditProfile";
 import ReelsScreen from "./Screens/ReelsScreen";
@@ -107,6 +108,7 @@ export default function App() {
               <>
                 <Stack.Screen name="Ulker Social" component={bottomTabScreen} />
                 <Stack.Screen name="Status" component={Status} />
+                <Stack.Screen name="NewReels" component={NewReels} />
                 <Stack.Screen name="Logout" component={LogoutScreen} />
 
                 <Stack.Screen
