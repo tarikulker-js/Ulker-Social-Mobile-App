@@ -3,9 +3,19 @@
 <h1 align="center">Hi 👋, I'm Tarik, Yahya Tarik Ulker</h1>
 <h3 align="center">A passionate 15 year old full stack developer from Turkey</h3>
 
+````
+  Fix for prototype.bool errors:
+  
+  - 1) Go node_modules/react-native-root-modal/lib
+  - 2) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in Modal.js
+  - 3) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in ModalContainer.js
+  
+
+````
+
 - 🔭 I’m currently working on [Ulker Social](https://ulker-social.netlify.app)
 
-- 🌱 I’m currently learning **Cyber Security**
+- 🌱 I’m currently working **Freelancer Developer**
 
 - 🤝 I’m looking for help with [E-Mail](mailto:yahyatrkulker35@gmail.com)
 
