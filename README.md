@@ -5,14 +5,10 @@
 
 ````
   Fix for prototype.bool errors:
-  
   - 1) Go node_modules/react-native-root-modal/lib
   - 2) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in Modal.js
   - 3) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in ModalContainer.js
-  
-
 ````
-
 - 🔭 I’m currently working on [Ulker Social](https://ulker-social.netlify.app)
 
 - 🌱 I’m currently working **Freelancer Developer**
