@@ -28,6 +28,8 @@ import LoginScreen from "./Screens/LoginScreen";
 import LogoutScreen from "./Screens/LogoutScreen";
 
 import LocalStorage from "@react-native-async-storage/async-storage";
+import ChatScreen from "./Screens/ChatScreen";
+import RegisterScreen from "./Screens/RegisterScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -103,12 +105,17 @@ export default function App() {
             }}
           >
             {!jwt || jwt == "" ? (
-              <Stack.Screen name="Login" component={LoginScreen} />
+              <>
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Register" component={RegisterScreen} />
+              
+              </>
             ) : (
               <>
                 <Stack.Screen name="Ulker Social" component={bottomTabScreen} />
                 <Stack.Screen name="Status" component={Status} />
                 <Stack.Screen name="NewReels" component={NewReels} />
+                <Stack.Screen name="Chat" component={ChatScreen} />
                 <Stack.Screen name="Logout" component={LogoutScreen} />
 
                 <Stack.Screen

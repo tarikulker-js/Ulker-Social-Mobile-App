@@ -169,86 +169,88 @@ const Profile = () => {
   };
 
   return (
-    <ScrollView 
-    nestedScrollEnabled = {true} 
-    refreshControl={
-      <RefreshControl
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-      />
-    }>
-      {console.log("myId in profileScreen", myId)}
+    <>
+      <ScrollView 
+        nestedScrollEnabled = {true} 
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
+          {console.log("myId in profileScreen", myId)}
 
-      {isLoading == false && myId !== null || user ? (
-        <>
-          <View
-            style={{ width: "100%", height: "100%", backgroundColor: "white" }}
-          >
-            <View style={{ width: "100%", padding: 10 }}>
-              <ProfileBody
-                name={user.name}
-                accountName={user.name}
-                profileImage={{ uri: profilePic }}
-                followers={userProfile.followers.length}
-                following={userProfile.following.length}
-                post={mypics.length}
-                user={user}
-              />
-              <ProfileButtons
-                user={user}
-                userProfile={userProfile}
-                profilePic={profilePic}
-                mypics={mypics}
-                myid={myId}
-              />
-            </View>
-            <View>
-              <Text
-                style={{
-                  padding: 10,
-                  letterSpacing: 1,
-                  fontSize: 14,
-                }}
+          {isLoading == false && myId !== null || user ? (
+            <>
+              <View
+                style={{ width: "100%", height: "100%", backgroundColor: "white" }}
               >
-                Öne Çıkan Hikayeler (Çok Yakında!)
-              </Text>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                style={{
-                  paddingVertical: 5,
-                  paddingHorizontal: 10,
-                }}
-              >
-                {circuls}
-              </ScrollView>
-            </View>
-            {/* GALLERY */}
-
-            <SafeAreaView style={styles.container}>
-              {userProfile !== null ? (
-                <>
-                  <FlatList
-                    nestedScrollEnabled 
-                    horizontal={false}
-                    numColumns={3}
-                    data={mypics}
-                    keyExtractor={(index) => index._id}
-                    renderItem={renderImages}
+                <View style={{ width: "100%", padding: 10 }}>
+                  <ProfileBody
+                    name={user.name}
+                    accountName={user.name}
+                    profileImage={{ uri: profilePic }}
+                    followers={userProfile.followers.length}
+                    following={userProfile.following.length}
+                    post={mypics.length}
+                    user={user}
                   />
-                </>
-              ) : (
-                <></>
-              )}
-            </SafeAreaView>
-          </View>
-        </>
-      ) : (
-        <>
-          <Text>Yükleniyor...</Text>
-        </>
-      )}
-    </ScrollView>
+                  <ProfileButtons
+                    user={user}
+                    userProfile={userProfile}
+                    profilePic={profilePic}
+                    mypics={mypics}
+                    myid={myId}
+                  />
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      padding: 10,
+                      letterSpacing: 1,
+                      fontSize: 14,
+                    }}
+                  >
+                    Öne Çıkan Hikayeler (Çok Yakında!)
+                  </Text>
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    style={{
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                    }}
+                  >
+                    {circuls}
+                  </ScrollView>
+                </View>
+                {/* GALLERY */}
+
+                <SafeAreaView style={styles.container}>
+                  {userProfile !== null ? (
+                    <>
+                      <FlatList
+                        nestedScrollEnabled 
+                        horizontal={false}
+                        numColumns={3}
+                        data={mypics}
+                        keyExtractor={(index) => index._id}
+                        renderItem={renderImages}
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </SafeAreaView>
+              </View>
+            </>
+          ) : (
+            <>
+              <Text>Yükleniyor...</Text>
+            </>
+          )}
+        </ScrollView>
+      </>
   );
 };
 

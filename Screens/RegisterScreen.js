@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, View, TextInput, Button, Linking } from "react-native";
+import { Text, View, TextInput, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LocalStorage from "@react-native-async-storage/async-storage";
@@ -9,7 +9,7 @@ import { API_URL } from "../config.json";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   React.useEffect(() => {
@@ -22,6 +22,7 @@ export default function LoginScreen() {
     return unsubscribe;
   }, [navigation]);
 
+  const [name, onChangeName] = React.useState(null);
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
 
@@ -34,19 +35,18 @@ export default function LoginScreen() {
     });
   });
 
-  const login = () => {
-    console.log("logining...");
-
-    fetch(API_URL + "/signin", {
+  const register = () => {
+    fetch(API_URL + "/signup", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
+      body:JSON.stringify({
+        name,
+        password,
+        email
+    })
     })
       .then((res) => res.json())
       .then((data) => {
@@ -56,6 +56,7 @@ export default function LoginScreen() {
           LocalStorage.setItem("jwt", data.token);
           LocalStorage.setItem("userid", data.user);
           alert("başarılı");
+          navigation.navigate("Login")
         }
       })
       .catch((err) => console.log("login post error: ", err));
@@ -65,8 +66,21 @@ export default function LoginScreen() {
     <View style={{flex: 1}}>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={{ fontWeight: 'bold', fontSize: 28, opacity: 0.75 }}>Ulker Social'a hoşgeldiniz</Text>
-
-
+        <TextInput
+          style={{
+            borderColor: "red",
+            borderRadius: 100,
+            height: 40,
+            width: "80%",
+            margin: 12,
+            borderWidth: 1,
+            padding: 10,
+          }}
+          onChangeText={onChangeName}
+          value={name}
+          placeholder="Tam Ad"
+          keyboardType="name-address"
+        />
         <TextInput
           style={{
             borderColor: "red",
@@ -107,30 +121,16 @@ export default function LoginScreen() {
             borderWidth: 1,
             padding: 10,
           }}
-          title="Giriş Yap"
-          onPress={login}
+          title="Kayıt Ol"
+          onPress={register}
         />
 
         <Paper.Button color="black" style={{
           marginTop: 30,
           fontSize: 20
         }} onPress={() => {
-          navigation.navigate("Register")
-        }}>Hesabınız yok mu? Kayıt olun!</Paper.Button>
-
-        <Paper.Button color="black" style={{
-          marginTop: 5,
-          fontSize: 20
-        }} onPress={() => {
-          Linking.openURL("https://ulker-social.netlify.app/reset")
-        }}>Şifremi unuttum!</Paper.Button>
-        
-        <Paper.Button color="black" style={{
-          marginTop: 5,
-          fontSize: 20
-        }} onPress={() => {
-          Linking.openURL("https://ulker-social.netlify.app/verify")
-        }}>Hesabımı onaylamak istiyorum!</Paper.Button>
+          navigation.navigate("Login")
+        }}>Hesabınız var mı? Giriş yapın!</Paper.Button>
       </View>
 
     </View>

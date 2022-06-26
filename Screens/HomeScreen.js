@@ -65,14 +65,15 @@ export default function HomeScreen() {
         }}
       >
         <FontAwesome name="plus-square-o" size={36} onPress={() => {
-          Alert.alert("Create Post");
           navigation.navigate("NewPostInGallery");
         }} />
         <Text style={{ fontSize: 25, fontWeight: "500" }}>UlkerSocial</Text>
         <Feather
           name="navigation"
           size={28}
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate("Chat");
+          }}
         />
       </View>
 

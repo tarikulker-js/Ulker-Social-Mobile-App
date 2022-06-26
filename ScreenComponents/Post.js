@@ -344,6 +344,7 @@ export default function Post() {
                       </View>
                     );
                   })}
+                  
                   <View
                     style={{
                       flexDirection: "row",
