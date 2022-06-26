@@ -9,7 +9,7 @@
   - 2) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in Modal.js
   - 3) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in ModalContainer.js
 ````
-- 🔭 I’m currently working on [Ulker Social](https://ulker-social.netlify.app)
+- 🔭 I’m currently working on [Ulker Social](https://ulker-social.netlify.app) Mobile Application
 
 - 🌱 I’m currently working **Freelancer Developer**
 
