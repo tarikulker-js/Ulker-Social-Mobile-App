@@ -9,7 +9,7 @@
   - 2) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in Modal.js
   - 3) Edit import PropTypes to "import PropTypes from 'prop-types';" from 'react' in ModalContainer.js
 ````
-- 🔭 I’m currently working on [Ulker Social](https://ulker-social.netlify.app) Mobile Application
+- 🔭 I’m currently working on [BlindLook](https://blindlook.com/)
 
 - 🌱 I’m currently working **Freelancer Developer**
 
@@ -18,8 +18,6 @@
 - 💬 Ask me about **react, node.js, express.js, git, unity, javascript, css and html**
 
 - 📫 How to reach me **yahyatrkulker35@gmail.com**
-
-- ⚡ Sad fact **I Think I am not funny**
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
