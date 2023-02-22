@@ -1,7 +1,7 @@
 <h1 align='center'> Ulker Social Mobile app Open source code </h1>
 
 <h1 align="center">Hi 👋, I'm Tarik, Yahya Tarik Ulker</h1>
-<h3 align="center">A passionate 15 year old full stack developer from Turkey</h3>
+<h3 align="center">A passionate 16 years old full stack developer from Turkey</h3>
 
 ````
   Fix for prototype.bool errors:
